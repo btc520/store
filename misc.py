@@ -9,6 +9,6 @@ def add_section(mydata, key, value):
 
 
 if __name__ == "__main__":
-    mydata = '/srv/www/idehe.com/store/user/hechao.csv'
+    mydata = '/srv/www/idehe.com/store/user/ETF.csv'
     add_section(mydata, "group", "-")
     
