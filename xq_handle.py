@@ -2,7 +2,12 @@
 #-*- encoding: utf-8 -*-
 
 import cookielib, urllib2
-def raw_data(url):
+from bs4 import BeautifulSoup
+from urllib2 import urlopen
+import string
+
+def raw_data(sid, url_prefix):
+    url = url_prefix+sid
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
@@ -16,6 +21,39 @@ def raw_data(url):
     content = quote.read()
     return content
 
+def data_filter(sid, url_prefix):
+    rawdata = raw_data(sid, url_prefix)
+    soup = BeautifulSoup(rawdata, 'lxml')
+    #toptable all td
+    toptable = soup.find('table', class_="topTable")
+    #table_body = toptable.find('tbody')
+    #print type(toptable)
+    td_list = toptable.find_all("td")
+    sid_dict = {}
+    sid_dict['name'] = sid
+    #print len(td_list)
+    for i in range(len(td_list)):
+        #print i
+        head = td_list[i].find(text=True)
+        head_num = td_list[i].find('span').text
+        sid_dict[head] = head_num
+    return sid_dict
+
+def e_data(sdict):
+    e_data = {}
+    e_data['name'] = sdict['name']
+    e_data['52KH'] = sdict[u'52\u5468\u6700\u9ad8\uff1a'].encode()
+    e_data['52KL'] = sdict[u'52\u5468\u6700\u4f4e\uff1a'].encode()
+    e_data['volumn'] = sdict[u'\u8d44\u4ea7\u51c0\u503c\uff1a']
+    print e_data
+    
 if __name__ == "__main__":
-    url = "https://xueqiu.com/S/SZ160211"
-    print raw_data(url)
+    url_prefix = "https://xueqiu.com/S/"
+    sid = "SZ160211"
+    #raw_data = raw_data(url)
+    sdict = data_filter(sid, url_prefix)
+    print sdict
+    e_data(sdict)
+    
+    
+    
