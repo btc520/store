@@ -21,7 +21,9 @@ def raw_data(sid, url_prefix):
     content = quote.read()
     return content
 
-def data_filter(sid, url_prefix):
+def data_get(sid):
+    url_prefix = "https://xueqiu.com/S/"
+    # filter table td data from raw by soup
     rawdata = raw_data(sid, url_prefix)
     soup = BeautifulSoup(rawdata, 'lxml')
     #toptable all td
@@ -30,7 +32,7 @@ def data_filter(sid, url_prefix):
     #print type(toptable)
     td_list = toptable.find_all("td")
     sid_dict = {}
-    sid_dict['name'] = sid
+    #sid_dict['name'] = sid
     #print len(td_list)
     for i in range(len(td_list)):
         #print i
@@ -39,21 +41,23 @@ def data_filter(sid, url_prefix):
         sid_dict[head] = head_num
     return sid_dict
 
-def e_data(sdict):
+def select_data(sdict):
+    # english data and select data
     e_data = {}
-    e_data['name'] = sdict['name']
     e_data['52KH'] = sdict[u'52\u5468\u6700\u9ad8\uff1a'].encode()
     e_data['52KL'] = sdict[u'52\u5468\u6700\u4f4e\uff1a'].encode()
     e_data['volumn'] = sdict[u'\u8d44\u4ea7\u51c0\u503c\uff1a']
-    print e_data
+    e_data['jk'] = sdict[u'\u4eca\u5f00\uff1a']
+    return e_data
+
+    
     
 if __name__ == "__main__":
-    url_prefix = "https://xueqiu.com/S/"
     sid = "SZ160211"
     #raw_data = raw_data(url)
-    sdict = data_filter(sid, url_prefix)
-    print sdict
-    e_data(sdict)
+    sid_dict = data_get(sid)
+    print sid_dict
+    select_data(sid_dict)
     
     
     

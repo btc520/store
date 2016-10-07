@@ -1,6 +1,23 @@
 # -*- coding: utf-8 -*- 
 from html import HTML
 
+from csv_handle import csv_readlist
+def index_write():
+    f = open('/srv/www/idehe.com/store/index.html','w')
+    file_etf = "ETF_data.csv"
+    file_type = "type_data.csv"
+    file_path = '/srv/www/idehe.com/store/stock_data/'
+    
+    TYPE_table = type_table(file_type, file_path)
+    etf_table = ETF_table(file_etf, file_path)
+    
+    desc = page_desciption()
+    content = h_content(desc, etf_table, TYPE_table)
+    
+    h = html(content)
+    
+    f.writelines(h)
+
 def html(html_body):
     html_header ="""
     <!DOCTYPE html>
@@ -18,7 +35,7 @@ def html(html_body):
     </html>""" % (html_body)
     return html_header
 
-def page_layout(page_desc, stock_list, col1, col2, col3, lsfilter, chg_lsfilter, ext, storepic):
+def h_content(desc, etf_table, TYPE_table):
     layout = """
     <div class="container">
         <div class="row clearfix">
@@ -38,38 +55,10 @@ def page_layout(page_desc, stock_list, col1, col2, col3, lsfilter, chg_lsfilter,
     		%s
     		</div>
 	    </div>
-
-    	<div class="row clearfix">
-    		<div class="col-md-4 column">
-    		%s
-    		</div>
-    		<div class="col-md-4 column">
-    		%s
-    		</div>
-    		<div class="col-md-4 column">
-    		%s
-    		</div>
-	    </div>	    
-        <div class="row clearfix">
-    		<div class="col-md-12 column">
-    		%s
-    		</div>
-    	</div>	    
-	    
-	    <div class="row clearfix">
-		<div class="col-md-4 column">
-			<img alt="140x140" src=%s />
-		</div>
-		<div class="col-md-4 column">
-		reserve...
-		</div>
-		<div class="col-md-4 column">
-		reserve...
-		</div>
 		
 	</div>
 	</div>
-    """ % (page_desc, col1, col2, col3, lsfilter, chg_lsfilter, ext, stock_list, storepic)
+    """ % (desc, etf_table, TYPE_table, "blank4")
     
     return layout
 
@@ -79,11 +68,53 @@ def page_desciption():
     page_desc.h2("Welcome!")
     l = page_desc.ol
     l.li('This is the store of all my stocks! thanks for visiting!')
-    l.li('VER:1.0, next design: ')
-    l.li('买入位对比更新位置')
-    l.li('自动更新市价，52K最低')
-    l.li('Post FORM 中文化-搞定， 新增证券-搞定')
+
     return str(page_desc)
+
+def ETF_table(file, file_path):
+    ls_dt = csv_readlist(file, file_path)
+    etable = HTML()
+    etable.h3("主要ETF，A股，港股，欧美，商品")
+    t = etable.table(border='2px', width ='60%', klass ='table table-bordered')
+    t.th('SID')
+    t.th('名称')
+    t.th('52K区间')
+    t.th('52K最高')
+    t.th('52K最低')
+    t.th('今开')
+    
+    for i in ls_dt:
+        r = t.tr
+        r.td(str(i['SID']))
+        r.td(str(i['cname']))
+        r.td(str(i['range']))
+        r.td(str(i['52KH']))
+        r.td(str(i['52KL']))
+        r.td(str(i['jk']))
+    return str(etable)
+    
+def type_table(file, file_path):
+    ls_dt = csv_readlist(file, file_path)
+    ttable = HTML()
+    ttable.h3("ETF 主题类")
+    t = ttable.table(border='2px', width ='60%', klass ='table table-bordered')
+    t.th('SID')
+    t.th('名称')
+    t.th('52K区间')
+    t.th('52K最高')
+    t.th('52K最低')
+    t.th('今开')
+    
+    for i in ls_dt:
+        r = t.tr
+        r.td(str(i['SID']))
+        r.td(str(i['cname']))
+        r.td(str(i['range']))
+        r.td(str(i['52KH']))
+        r.td(str(i['52KL']))
+        r.td(str(i['jk']))
+        
+    return str(ttable)
     
 def html_stock_list(stock_data):
     stock_list = HTML()
@@ -273,6 +304,5 @@ def html_content_dc(user):
     
         
 if __name__ == "__main__":
-    k =html_table_addnew('aa')
-    print k
+    index_write()
     
