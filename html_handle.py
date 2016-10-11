@@ -2,21 +2,7 @@
 from html import HTML
 
 from csv_handle import csv_readlist
-def index_write():
-    f = open('/srv/www/idehe.com/store/index.html','w')
-    file_etf = "ETF_data.csv"
-    file_type = "type_data.csv"
-    file_path = '/srv/www/idehe.com/store/stock_data/'
-    
-    TYPE_table = type_table(file_type, file_path)
-    etf_table = ETF_table(file_etf, file_path)
-    
-    desc = page_desciption()
-    content = h_content(desc, etf_table, TYPE_table)
-    
-    h = html(content)
-    
-    f.writelines(h)
+
 
 def html(html_body):
     html_header ="""
@@ -35,7 +21,7 @@ def html(html_body):
     </html>""" % (html_body)
     return html_header
 
-def h_content(desc, etf_table, TYPE_table):
+def h_content(desc, table1, table2, table3):
     layout = """
     <div class="container">
         <div class="row clearfix">
@@ -58,7 +44,7 @@ def h_content(desc, etf_table, TYPE_table):
 		
 	</div>
 	</div>
-    """ % (desc, etf_table, TYPE_table, "blank4")
+    """ % (desc, table1, table2, table3)
     
     return layout
 
@@ -71,11 +57,18 @@ def page_desciption():
 
     return str(page_desc)
 
-def ETF_table(file, file_path):
-    ls_dt = csv_readlist(file, file_path)
-    etable = HTML()
-    etable.h3("主要ETF，A股，港股，欧美，商品")
-    t = etable.table(border='2px', width ='60%', klass ='table table-bordered')
+def table(data, title, tdesc):
+    dtable = HTML()
+    dtable.h3(title)
+    
+    desc = []
+    if tdesc !="":
+        desc = tdesc.split("/")
+    l = dtable.ol
+    for k in desc:
+        l.li(k)
+
+    t = dtable.table(border='2px', width ='60%', klass ='table table-bordered')
     t.th('SID')
     t.th('名称')
     t.th('52K区间')
@@ -83,7 +76,8 @@ def ETF_table(file, file_path):
     t.th('52K最低')
     t.th('今开')
     
-    for i in ls_dt:
+    for i in data:
+        #print i
         r = t.tr
         r.td(str(i['SID']))
         r.td(str(i['cname']))
@@ -91,30 +85,32 @@ def ETF_table(file, file_path):
         r.td(str(i['52KH']))
         r.td(str(i['52KL']))
         r.td(str(i['jk']))
-    return str(etable)
-    
-def type_table(file, file_path):
+    return str(dtable)
+
+
+def sort_range(file, file_path):
     ls_dt = csv_readlist(file, file_path)
-    ttable = HTML()
-    ttable.h3("ETF 主题类")
-    t = ttable.table(border='2px', width ='60%', klass ='table table-bordered')
-    t.th('SID')
-    t.th('名称')
-    t.th('52K区间')
-    t.th('52K最高')
-    t.th('52K最低')
-    t.th('今开')
+    range_ls = []
+    range_ls_tmp =[]
+    n_lsdt = []
     
     for i in ls_dt:
-        r = t.tr
-        r.td(str(i['SID']))
-        r.td(str(i['cname']))
-        r.td(str(i['range']))
-        r.td(str(i['52KH']))
-        r.td(str(i['52KL']))
-        r.td(str(i['jk']))
+        range_ls_tmp.append(i['range'])
+    range_ls = sorted(range_ls_tmp)
+
+    for k in range_ls:
+        for i in ls_dt:
+            if i['range'] == k:
+                n_lsdt.append(i)
         
-    return str(ttable)
+    return n_lsdt
+
+def sort_range_f5(lsdt):
+    lsdt5 = []
+    for i in lsdt[:7]:
+        lsdt5.append(i)
+    #lsdt.remove([5:-1])
+    return lsdt5
     
 def html_stock_list(stock_data):
     stock_list = HTML()
@@ -301,6 +297,31 @@ def html_content_dc(user):
     html_cont['filter'] = html_table_filter_str
     html_cont['chg_filter'] = html_table_chg_filter_str
     return html_cont
+
+def index_write():
+    f = open('/srv/www/idehe.com/store/index.html','w')
+    
+    file_etf = "ETF_data.csv"
+    file_type = "type_data.csv"
+    file_funda = "funda_data.csv"
+    file_path = '/srv/www/idehe.com/store/stock_data/'
+    
+    etf_data = sort_range(file_etf, file_path)
+    type_data = sort_range(file_type, file_path)
+    sfunda_data = sort_range(file_funda, file_path)
+    f5_funda = sort_range_f5(sfunda_data)
+    
+    table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
+    #print table_e
+    table_t = table(type_data, '主题ETF', '1年价格排序/')
+    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上/成交量100W以上/1年价格排序")
+    
+    desc = page_desciption()
+    content = h_content(desc, table_e, table_t, table_fa)
+    
+    h = html(content)
+    
+    f.writelines(h)
     
         
 if __name__ == "__main__":
