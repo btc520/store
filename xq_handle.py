@@ -47,17 +47,20 @@ def select_data(sdict):
     e_data['52KH'] = sdict[u'52\u5468\u6700\u9ad8\uff1a'].encode()
     e_data['52KL'] = sdict[u'52\u5468\u6700\u4f4e\uff1a'].encode()
     e_data['volumn'] = sdict[u'\u8d44\u4ea7\u51c0\u503c\uff1a']
-    e_data['jk'] = sdict[u'\u4eca\u5f00\uff1a']
+    e_data['jk'] = sdict[u'\u4eca\u5f00\uff1a'].encode()
+    e_data['premium'] = sdict[u'\u6ea2\u4ef7\u7387\uff1a'].encode()
+    e_data['30avg'] = sdict[u'30\u65e5\u5747\u91cf\uff1a']
     return e_data
 
     
     
 if __name__ == "__main__":
-    sid = "SZ160211"
+    sid = "SZ160211" # guotai xiaopan
+    sid2 = "SZ162712"
     #raw_data = raw_data(url)
-    sid_dict = data_get(sid)
+    sid_dict = data_get(sid2)
     print sid_dict
-    select_data(sid_dict)
+    print select_data(sid_dict)
     
     
     

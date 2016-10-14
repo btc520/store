@@ -33,6 +33,8 @@ def data_mhandle(infile, outfile, file_path):
 if __name__ == "__main__":
     type_ifile = "type.csv"
     type_ofile = "type_data.csv"
+    zhaij_ifile = "zhaij.csv"
+    zhaij_ofile = "zhaij_data.csv"
     etf_ifile = "ETF.csv"
     etf_ofile = "ETF_data.csv"
     funda_ifile = 'funda.csv'
@@ -40,8 +42,9 @@ if __name__ == "__main__":
     
     file_path = "/srv/www/idehe.com/store/stock_data/"
     
-    #data_mhandle(type_ifile, type_ofile, file_path)   #type
+    data_mhandle(zhaij_ifile, zhaij_ofile, file_path)   #zhaij
+    data_mhandle(type_ifile, type_ofile, file_path)   #type
     #data_mhandle(etf_ifile, etf_ofile, file_path)   #etf
-    data_mhandle(funda_ifile, funda_ofile, file_path)   #etf    
+    #data_mhandle(funda_ifile, funda_ofile, file_path)   #funda
     
     
