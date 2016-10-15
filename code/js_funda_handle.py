@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 import json
-from csv_handle import csv_writelist
+from csv_handle import csv_readlist, csv_writelist
 
 def funda_raw2(funda_url):
     funda_lst = []
@@ -97,6 +97,7 @@ def funda(funda_raw, discount, profit, base_profit):
             #print i
             funda[i] = funda_raw[i]
     return funda
+
     
 if __name__ == "__main__":
     funda_url = 'http://www.jisilu.cn/data/sfnew/funda_list/'
@@ -105,6 +106,7 @@ if __name__ == "__main__":
     funda_rawdata = funda_raw2(funda_url)
     funda_fdata = funda_fdata(funda_rawdata)
     funda_fcode = funda_fcode(funda_fdata)
+
     csv_writelist(file, file_path, funda_fcode)
     
     

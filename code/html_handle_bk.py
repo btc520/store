@@ -30,23 +30,29 @@ def h_content(desc, table1, table2, table3, table4):
     		</div>
     	</div>
     	
-    	<div class="row clearfix">
-    		<div class="col-md-6 column">
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
     		%s
     		</div>
-    		<div class="col-md-6 column">
-    		%s
-    		</div>
-	    </div>
+    	</div>
 
-    	<div class="row clearfix">
-    		<div class="col-md-6 column">
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
     		%s
     		</div>
-    		<div class="col-md-6 column">
+    	</div>
+
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
     		%s
     		</div>
-	    </div>
+    	</div>
+
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
+    		%s
+    		</div>
+    	</div>
 	    
 	</div>
 	</div>
@@ -84,7 +90,9 @@ def table(data, title, tdesc):
     t.th('市值')
     t.th('30日均量')
     t.th('折溢价')
+    t.th('组别')
     
+
     for i in data:
         #print i
         r = t.tr
@@ -97,6 +105,7 @@ def table(data, title, tdesc):
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
         r.td(str(i['premium']))
+        r.td(str(i['category']))        
     return str(dtable)
 
 
@@ -120,7 +129,7 @@ def sort_range(file, file_path, type):
 
 def sort_range_f5(lsdt):
     lsdt5 = []
-    for i in lsdt[:7]:
+    for i in lsdt[:11]:
         lsdt5.append(i)
     #lsdt.remove([5:-1])
     return lsdt5
@@ -315,21 +324,21 @@ def index_write():
     f = open('/srv/www/idehe.com/store/index.html','w')
     
     file_etf = "ETF_data.csv"
-    file_type = "type_data.csv"
+    file_type = "topic_data.csv"
     file_funda = "funda_data.csv"
     file_zhaij = "zhaij_data.csv"
     file_path = '/srv/www/idehe.com/store/stock_data/'
     
     etf_data = sort_range(file_etf, file_path, 'range')
-    type_data = sort_range(file_type, file_path, 'range')
+    topic_data = sort_range(file_type, file_path, 'range')
     sfunda_data = sort_range(file_funda, file_path, 'range')
-    zhaij_data = sort_range(file_zhaij, file_path, 'range')
+    zhaij_data = sort_range(file_zhaij, file_path, 'premium')
     f5_funda = sort_range_f5(sfunda_data)
     
     table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
     #print table_e
     table_t = table(type_data, '主题ETF', '1年价格排序/')
-    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上/成交量100W以上/1年价格排序/52K最高价有峰值错误点u不准确的：军工股A，网金融，房地产，中行军, 食品，环保A")
+    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上/成交量100W以上/1年价格排序/52K不准确：环保，军工股A，网金融")
     table_zj = table(zhaij_data, '债基', '主要看折溢价/')
     
     desc = page_desciption()

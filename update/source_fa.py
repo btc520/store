@@ -1,2 +1,2 @@
 import os
-os.system('python /srv/www/idehe.com/store/js_funda_handle.py')
+os.system('python /srv/www/idehe.com/store/code/js_funda_handle.py')

@@ -1,5 +1,6 @@
 import sys
-sys.path.append("..")
+#sys.path.append("..")
+sys.path.append('/srv/www/idehe.com/store/code')
 from data_handle import data_mhandle
 
 funda_ifile = 'funda.csv'
