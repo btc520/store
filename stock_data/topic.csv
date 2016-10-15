@@ -1,4 +1,4 @@
-SID,category,cname
+SID,category,cname,disct,
 SH512660,军工,军工ETF
 SH512880,证券,证券ETF
 SH501005,医疗,精准医疗
@@ -8,3 +8,4 @@ SZ159928,消费,消费ETF
 SZ164906,互联网,中国互联
 SH510880,红利,红利ETF
 SZ159905,红利,深红利
+SH502006,政策,国企改革

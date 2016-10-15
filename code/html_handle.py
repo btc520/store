@@ -21,7 +21,7 @@ def html(html_body):
     </html>""" % (html_body)
     return html_header
 
-def h_content(desc, table1, table2, table3, table4):
+def h_content(desc, t1, t2, t3, t4, t5):
     layout = """
     <div class="container">
         <div class="row clearfix">
@@ -53,10 +53,16 @@ def h_content(desc, table1, table2, table3, table4):
     		%s
     		</div>
     	</div>
-	    
+
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
+    		%s
+    		</div>
+    	</div>
+    	
 	</div>
 	</div>
-    """ % (desc, table1, table2, table3, table4)
+    """ % (desc, t1, t2, t3, t4, t5)
     
     return layout
 
@@ -83,15 +89,14 @@ def table(data, title, tdesc):
     t = dtable.table(border='2px', width ='60%', klass ='table table-bordered')
     t.th('SID')
     t.th('名称')
-    t.th('52K区间')
-    t.th('52K最高')
-    t.th('52K最低')
-    t.th('今开')
+    t.th('52W区间')
+    t.th('52W最高')
+    t.th('52W最低')
+    t.th('今开价格')
     t.th('市值')
     t.th('30日均量')
-    t.th('折溢价')
+    t.th('折溢价(.. 年化)')
     t.th('组别')
-    
 
     for i in data:
         #print i
@@ -104,7 +109,7 @@ def table(data, title, tdesc):
         r.td(str(i['jk']))
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
-        r.td(str(i['premium']))
+        r.td("%s .. %s" % (str(i['premium']), str(i['disct'])))
         r.td(str(i['category']))        
     return str(dtable)
 
@@ -148,22 +153,25 @@ def index_write():
     file_type = "topic_data.csv"
     file_funda = "funda_data.csv"
     file_zhaij = "zhaij_data.csv"
+    file_uncategory = "uncategory_data.csv"
     file_path = '/srv/www/idehe.com/store/stock_data/'
     
     etf_data = sort_range(file_etf, file_path, 'range')
     topic_data = sort_range(file_type, file_path, 'range')
     sfunda_data = sort_range(file_funda, file_path, 'range')
     zhaij_data = sort_range(file_zhaij, file_path, 'premium')
+    uncategory_data = sort_range(file_uncategory, file_path, 'range')
     f5_funda = sort_range_f5(sfunda_data)
     
     table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
     #print table_e
     table_t = table(topic_data, '主题ETF', '1年价格排序/')
-    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上/成交量100W以上/1年价格排序/52K不准确：环保，军工股A，网金融")
-    table_zj = table(zhaij_data, '债基', '主要看折溢价/')
+    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融")
+    table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/')
+    table_un = table(uncategory_data, '其他未分类', '-')
     
     desc = page_desciption()
-    content = h_content(desc, table_e, table_t, table_fa, table_zj)
+    content = h_content(desc, table_e, table_t, table_fa, table_zj, table_un)
     
     h = html(content)
     
