@@ -95,9 +95,10 @@ def table(data, title, tdesc):
     t.th('今开价格')
     t.th('市值')
     t.th('30日均量')
-    t.th('折溢价(.. 年化)')
+    t.th('折溢价')
     t.th('组别')
-
+    t.th('X?')
+    
     for i in data:
         #print i
         r = t.tr
@@ -109,8 +110,9 @@ def table(data, title, tdesc):
         r.td(str(i['jk']))
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
-        r.td("%s .. %s" % (str(i['premium']), str(i['disct'])))
-        r.td(str(i['category']))        
+        r.td(str(i['premium']))
+        r.td(str(i['category']))   
+        r.td(str(i['disct']))
     return str(dtable)
 
 
@@ -166,9 +168,9 @@ def index_write():
     table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
     #print table_e
     table_t = table(topic_data, '主题ETF', '1年价格排序/')
-    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融")
-    table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/')
-    table_un = table(uncategory_data, '其他未分类', '-')
+    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价")
+    table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/年化折价')
+    table_un = table(uncategory_data, '其他未分类', 'X=封基年化折价')
     
     desc = page_desciption()
     content = h_content(desc, table_e, table_t, table_fa, table_zj, table_un)
