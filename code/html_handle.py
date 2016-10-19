@@ -21,7 +21,7 @@ def html(html_body):
     </html>""" % (html_body)
     return html_header
 
-def h_content(desc, t1, t2, t3, t4, t5):
+def h_content(desc, t1, t2, t3, t4, t5, t6):
     layout = """
     <div class="container">
         <div class="row clearfix">
@@ -35,6 +35,12 @@ def h_content(desc, t1, t2, t3, t4, t5):
     		%s
     		</div>
     	</div>
+    	
+        <div class="row clearfix">
+    		<div class="col-md-12 column">
+    		%s
+    		</div>
+    	</div>
 
         <div class="row clearfix">
     		<div class="col-md-12 column">
@@ -62,7 +68,7 @@ def h_content(desc, t1, t2, t3, t4, t5):
     	
 	</div>
 	</div>
-    """ % (desc, t1, t2, t3, t4, t5)
+    """ % (desc, t1, t2, t3, t4, t5, t6)
     
     return layout
 
@@ -92,9 +98,9 @@ def table(data, title, tdesc):
     t.th('52W区间')
     t.th('52W最高')
     t.th('52W最低')
-    t.th('今开价格')
+    t.th('价格')
     t.th('市值')
-    t.th('30日均量')
+    t.th('30日均量(总市值)')
     t.th('折溢价')
     t.th('组别')
     t.th('X?')
@@ -107,7 +113,7 @@ def table(data, title, tdesc):
         r.td(str(i['range'])+"%")
         r.td(str(i['52KH']))
         r.td(str(i['52KL']))
-        r.td(str(i['jk']))
+        r.td(str(i['current_price']))
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
         r.td(str(i['premium']))
@@ -156,14 +162,19 @@ def index_write():
     file_funda = "funda_data.csv"
     file_zhaij = "zhaij_data.csv"
     file_uncategory = "uncategory_data.csv"
+    file_index = "index_data.csv"
+    
     file_path = '/srv/www/idehe.com/store/stock_data/'
     
     etf_data = sort_range(file_etf, file_path, 'range')
     topic_data = sort_range(file_type, file_path, 'range')
-    sfunda_data = sort_range(file_funda, file_path, 'range')
     zhaij_data = sort_range(file_zhaij, file_path, 'premium')
     uncategory_data = sort_range(file_uncategory, file_path, 'range')
+    index_data = sort_range(file_index, file_path, 'range')
+    
+    sfunda_data = sort_range(file_funda, file_path, 'range')
     f5_funda = sort_range_f5(sfunda_data)
+    
     
     table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
     #print table_e
@@ -171,9 +182,10 @@ def index_write():
     table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价")
     table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/年化折价')
     table_un = table(uncategory_data, '其他未分类', 'X=封基年化折价')
+    table_ind = table(index_data, '指数', '')
     
     desc = page_desciption()
-    content = h_content(desc, table_e, table_t, table_fa, table_zj, table_un)
+    content = h_content(desc, table_ind, table_e, table_t, table_fa, table_zj, table_un)
     
     h = html(content)
     
