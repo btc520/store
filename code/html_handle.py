@@ -81,6 +81,41 @@ def page_desciption():
 
     return str(page_desc)
 
+def table_index(data, title, tdesc):
+    dtable = HTML()
+    dtable.h3(title)
+    
+    desc = []
+    if tdesc !="":
+        desc = tdesc.split("/")
+    l = dtable.ol
+    for k in desc:
+        l.li(k)
+
+    t = dtable.table(border='2px', width ='60%', klass ='table table-bordered')
+    t.th('SID')
+    t.th('名称')
+    t.th('52W区间')
+    t.th('52W最高 / 2015-2016')
+    t.th('52W最低 / 2015-2016')
+    t.th('价格')
+    t.th('市值')
+    t.th('总市值')
+
+    
+    for i in data:
+        #print i
+        r = t.tr
+        r.td(str(i['SID']))
+        r.td(str(i['cname']))
+        r.td(str(i['range'])+"%" + " | " + str(i['hist_range'])+"%")
+        r.td(str(i['52KH']) + " | " + str(i['hist_H']))
+        r.td(str(i['52KL']) + " | " + str(i['hist_L']))
+        r.td(str(i['current_price']))
+        r.td(str(i['volumn']))
+        r.td(str(i['30avg']))
+    return str(dtable)
+    
 def table(data, title, tdesc):
     dtable = HTML()
     dtable.h3(title)
@@ -182,7 +217,7 @@ def index_write():
     table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价")
     table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/年化折价')
     table_un = table(uncategory_data, '其他未分类', 'X=封基年化折价')
-    table_ind = table(index_data, '指数', '')
+    table_ind = table_index(index_data, '指数', '')
     
     desc = page_desciption()
     content = h_content(desc, table_ind, table_e, table_t, table_fa, table_zj, table_un)

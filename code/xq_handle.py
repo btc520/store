@@ -75,7 +75,7 @@ def data_get_index(sid):
         head = td_list[i].find(text=True)
         
         if td_list[i].find('span') == None:
-            print "none find"
+            #print "none find"
             sid_dict[head] = ''
         else: 
             head_num = td_list[i].find('span').text
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     #print select_data(sid_dict)
     
     sid_dict_index = data_get_index(sid2)
-    print select_data_index(sid_dict_index)
+    #print select_data_index(sid_dict_index)
     
     
     

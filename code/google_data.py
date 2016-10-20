@@ -5,11 +5,13 @@ from urllib2 import urlopen
 from csv_handle import csv_writelist,csv_readlist
 import string
 
+import os 
 
-def url_build(cid, year):
-    start = 'jan+1+%s' % year
-    end = 'dec+12+%s' % year
+def url_build(cid, syear, eyear):
+    start = 'jan+1+%s' % syear
+    end = 'dec+12+%s' % eyear
     url_list = []
+ 
     url_pg1 = "https://www.google.com/finance/historical?cid=%s&startdate=%s&enddate=%s&num=200&start=0" % (cid, start, end)
     url_pg2 = "https://www.google.com/finance/historical?cid=%s&startdate=%s&enddate=%s&num=200&start=200" % (cid, start, end)
     url_pg3 = "https://www.google.com/finance/historical?cid=%s&startdate=%s&enddate=%s&num=200&start=400" % (cid, start, end)
@@ -47,9 +49,9 @@ def stock_pg_data(url):
     #print pg_data_list
     return pg_data_list
     
-def all_data(cid,year):
+def all_data(cid,syear,eyear):
     all_data = []
-    url_list = url_build(cid,year)
+    url_list = url_build(cid,syear,eyear)
     pg1_datadict = stock_pg_data(url_list[0])
     pg2_datadict = stock_pg_data(url_list[1])
     
@@ -73,11 +75,23 @@ def data_write(cid, path, data):
     file = '%s.csv' % (sid)
     csv_writelist(file, path, data)
     
-def slist_handle(slist, year, path):
+def slist_handle(cid_file, syear, eyear, path):
+    slist_tmp = csv_readlist(cid_file, path)
+    slist = []
+    for j in slist_tmp:
+        slist.append(j['CID'])
+        
     for i in slist:
-        adata = all_data(i,year)
+        adata = all_data(i,syear, eyear)
         data_write(i, path, adata)
         
+def gfile_check(SID, path):
+    file = '%s.csv' % SID
+    check_f = '%s%s' % (path,file)
+    check = os.path.isfile(check_f) #如果不存在就返回False
+    print check
+    return check
+    
 def data_find(SID, path):
     m_value = []
     file = '%s.csv' % SID
@@ -99,13 +113,17 @@ if __name__ == "__main__":
     tmp = 'https://www.google.com/finance/historical?cid=13414271&startdate=jan+1+2015&enddate=dec+31+2016&num=200&start=200'
     cid = '7521596'
     cid_list = ['7521596','13414271']
-    year = 2015
+    cid_file = 'cid.csv'
+    syear = 2015
+    eyear = 2016
     path = '/srv/www/idehe.com/store/stock/'
     SID = 'SH000001'
+    
     #adata = all_data(cid,year)
     #print adata
     #data_write(cid, path, adata)
+    gfile_check(SID, path)
     #data_find(SID, path)
-    slist_handle(cid_list, year, path)
+    slist_handle(cid_file, syear, eyear, path)
     
     
