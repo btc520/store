@@ -22,6 +22,19 @@ def url_build(cid, syear, eyear):
     url_list.append(url_pg4)
     return url_list
     
+def data_format(date):
+    month = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06','Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'11',}
+    mon_tmp = str(date.split(' ')[0])
+    day_tmp = date.split(' ')[1].strip(',')
+    year = date.split(' ')[2]
+    mon = month[mon_tmp]
+    if len(day_tmp) ==2:
+        data_f = '%s%s%s' % (year, mon, day_tmp)
+    else:
+        data_f = '%s%s0%s' % (year, mon, day_tmp)
+    return data_f
+        
+    
 def stock_pg_data(url):
     # get this page close value dict
     page = urlopen(str(url))
@@ -35,6 +48,10 @@ def stock_pg_data(url):
         data_date = {}
         td_all_list = td.find_all('td')
         s_date = td.find('td', class_='lm').text.encode()[:-1]
+        
+        data_f = data_format(s_date)
+        data_date['date_format'] = data_f
+        print data_f
         data_date['date'] = s_date
         
         s_value_open = td_all_list[1].text
@@ -89,13 +106,37 @@ def gfile_check(SID, path):
     file = '%s.csv' % SID
     check_f = '%s%s' % (path,file)
     check = os.path.isfile(check_f) #如果不存在就返回False
-    print check
+    #print check
     return check
     
-def data_find(SID, path):
+def data_filter(SID, path, today, avg_range):
     m_value = []
     file = '%s.csv' % SID
     sdata = csv_readlist(file, path)
+    
+    date_fl = []
+    for i in sdata:
+        date_fl.append(int(i['date_format']))
+    sorted(date_fl,reverse = True)
+    date_filte_range = []
+    for j in range(int(avg_range)):
+        date_filte_range.append(str(date_fl[j]))
+        
+    data_fr_open = []
+    for k in date_filte_range:
+        for i in sdata:
+            if i['date_format'] == k:
+                print i['open']
+                data_fr_open.append(i['open'])
+    #print len(data_fr_open)
+    sum_range = 0.00
+    for f in data_fr_open:
+        
+        sum_range +=float(f)
+    #print sum_range
+    avg_rg = round(sum_range/float(avg_range),1)
+    #print avg_rg
+        
     HV = 0
     LV = 999999
     for i in sdata:
@@ -105,8 +146,9 @@ def data_find(SID, path):
         if float(j['close']) <=float(LV):
             LV = j['close']
     
-    m_value =[HV, LV]
+    m_value =[HV, LV, avg_rg]
     return m_value
+
     
     
 if __name__ == "__main__":
@@ -118,12 +160,13 @@ if __name__ == "__main__":
     eyear = 2016
     path = '/srv/www/idehe.com/store/stock/'
     SID = 'SH000001'
-    
+    today = '20161021'
+    #data_format('jan 1, 2015')
     #adata = all_data(cid,year)
     #print adata
     #data_write(cid, path, adata)
-    gfile_check(SID, path)
-    #data_find(SID, path)
-    slist_handle(cid_file, syear, eyear, path)
+    #gfile_check(SID, path)
     
+    slist_handle(cid_file, syear, eyear, path)
+    #data_filter(SID, path, today, '90')
     

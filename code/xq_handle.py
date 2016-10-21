@@ -94,7 +94,10 @@ def select_data_index(sdict):
         e_data['volumn'] = sdict[u'\u603b\u5e02\u503c\uff1a']
     else:
         e_data['volumn'] = ''
-    e_data['jk'] = sdict[u'\u4eca\u5f00\uff1a'].encode()
+    if sdict.has_key(u'\u4eca\u5f00\uff1a') :
+        e_data['jk'] = sdict[u'\u4eca\u5f00\uff1a'].encode()
+    else:
+        e_data['jk'] = ''
     e_data['premium'] = ''
     if sdict.has_key(u'30\u65e5\u5747\u91cf\uff1a') :
         e_data['30avg'] = sdict[u'30\u65e5\u5747\u91cf\uff1a']

@@ -99,8 +99,9 @@ def table_index(data, title, tdesc):
     t.th('52W最高 / 2015-2016')
     t.th('52W最低 / 2015-2016')
     t.th('价格')
+    t.th('90日均价')
     t.th('市值')
-    t.th('总市值')
+    t.th('30日均量')
 
     
     for i in data:
@@ -112,6 +113,7 @@ def table_index(data, title, tdesc):
         r.td(str(i['52KH']) + " | " + str(i['hist_H']))
         r.td(str(i['52KL']) + " | " + str(i['hist_L']))
         r.td(str(i['current_price']))
+        r.td(str(i['90_avg']))
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
     return str(dtable)

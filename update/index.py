@@ -8,9 +8,11 @@ from data_handle import data_mhandle_index
 
 ifile = 'index.csv'
 ofile = 'index_data.csv'
-
+today = '20161021'
+avg_range = '90'
 file_path = "/srv/www/idehe.com/store/stock_data/"
+g_path = '/srv/www/idehe.com/store/stock/'
 
-data_mhandle_index(ifile, ofile, file_path)
+data_mhandle_index(ifile, ofile, file_path, g_path, today, avg_range)
 
 index_write()
