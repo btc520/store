@@ -100,6 +100,7 @@ def table_index(data, title, tdesc):
     t.th('52W最低 / 2015-2016')
     t.th('价格')
     t.th('90日均价')
+    t.th('均价比较')
     t.th('市值')
     t.th('30日均量')
 
@@ -114,6 +115,7 @@ def table_index(data, title, tdesc):
         r.td(str(i['52KL']) + " | " + str(i['hist_L']))
         r.td(str(i['current_price']))
         r.td(str(i['90_avg']))
+        r.td(str(i['avg_compr']))
         r.td(str(i['volumn']))
         r.td(str(i['30avg']))
     return str(dtable)
@@ -213,7 +215,7 @@ def index_write():
     f5_funda = sort_range_f5(sfunda_data)
     
     
-    table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
+    table_e = table(etf_data, '主要市场ETF', '1年价格排序/均价比较=（现价减均价）除以现价')
     #print table_e
     table_t = table(topic_data, '主题ETF', '1年价格排序/')
     table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价")

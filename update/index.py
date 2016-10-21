@@ -13,6 +13,6 @@ avg_range = '90'
 file_path = "/srv/www/idehe.com/store/stock_data/"
 g_path = '/srv/www/idehe.com/store/stock/'
 
-data_mhandle_index(ifile, ofile, file_path, g_path, today, avg_range)
+data_mhandle_index(ifile, ofile, file_path, g_path, avg_range)
 
 index_write()

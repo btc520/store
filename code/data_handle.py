@@ -40,14 +40,17 @@ def data_range(is_lis_dic):
     #print is_lis_dic
     return is_lis_dic
 
-def data_range_index(is_lis_dic, g_path, today, avg_range):
+def data_range_index(is_lis_dic, g_path, avg_range):
     for i in is_lis_dic:
         SID = i['SID']
         check = gfile_check(SID, g_path)
+        data_f = data_filter(SID, g_path, avg_range)
         if check == True:
-            i['hist_H'] = data_filter(SID, g_path, today, avg_range)[0]
-            i['hist_L'] = data_filter(SID, g_path, today, avg_range)[1]
-            i['90_avg'] = data_filter(SID, g_path, today, avg_range)[2]
+            i['hist_H'] = data_f[0]
+            i['hist_L'] = data_f[1]
+            i['90_avg'] = data_f[2]
+            avg_compare = round((float(i['current_price'])-i['90_avg'])/float(i['current_price'])*100,2)
+            i['avg_compr'] = '%s%%' % avg_compare
     for i in is_lis_dic:
         cal_tmp = (float(i['current_price'])-float(i['hist_L']))/(float(i['hist_H'])-float(i['hist_L']))
         i['hist_range'] = round(cal_tmp*100,2)
@@ -58,10 +61,10 @@ def data_mhandle(infile, outfile, file_path):
     data_ranged = data_range(grabed_data)
     csv_writelist(outfile, file_path, data_ranged)
     
-def data_mhandle_index(infile, outfile, file_path, g_path, today, avg_range):
+def data_mhandle_index(infile, outfile, file_path, g_path, avg_range):
     grabed_data = grab_data_index(infile, file_path)
     data_ranged = data_range(grabed_data)
-    data_ranged_index = data_range_index(data_ranged, g_path, today, avg_range)    
+    data_ranged_index = data_range_index(data_ranged, g_path, avg_range)    
     csv_writelist(outfile, file_path, data_ranged_index)
 
     

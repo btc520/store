@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from urllib2 import urlopen
 from csv_handle import csv_writelist,csv_readlist
 import string
-
+from sdate import iso_date
 import os 
 
 def url_build(cid, syear, eyear):
@@ -51,7 +51,7 @@ def stock_pg_data(url):
         
         data_f = data_format(s_date)
         data_date['date_format'] = data_f
-        print data_f
+        #print data_f
         data_date['date'] = s_date
         
         s_value_open = td_all_list[1].text
@@ -109,7 +109,8 @@ def gfile_check(SID, path):
     #print check
     return check
     
-def data_filter(SID, path, today, avg_range):
+def data_filter(SID, path, avg_range):
+    today = iso_date()
     m_value = []
     file = '%s.csv' % SID
     sdata = csv_readlist(file, path)
@@ -126,7 +127,7 @@ def data_filter(SID, path, today, avg_range):
     for k in date_filte_range:
         for i in sdata:
             if i['date_format'] == k:
-                print i['open']
+                #print i['open']
                 data_fr_open.append(i['open'])
     #print len(data_fr_open)
     sum_range = 0.00
@@ -153,7 +154,7 @@ def data_filter(SID, path, today, avg_range):
     
 if __name__ == "__main__":
     tmp = 'https://www.google.com/finance/historical?cid=13414271&startdate=jan+1+2015&enddate=dec+31+2016&num=200&start=200'
-    cid = '7521596'
+    cid = '13414271'
     cid_list = ['7521596','13414271']
     cid_file = 'cid.csv'
     syear = 2015
@@ -162,11 +163,11 @@ if __name__ == "__main__":
     SID = 'SH000001'
     today = '20161021'
     #data_format('jan 1, 2015')
-    #adata = all_data(cid,year)
-    #print adata
+    adata = all_data(cid,syear, eyear)
+    print adata
     #data_write(cid, path, adata)
     #gfile_check(SID, path)
     
-    slist_handle(cid_file, syear, eyear, path)
+    #slist_handle(cid_file, syear, eyear, path)
     #data_filter(SID, path, today, '90')
     
