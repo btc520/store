@@ -161,30 +161,42 @@ def table(data, title, tdesc):
     return str(dtable)
 
 
-def sort_range(file, file_path, type):
-    # sort by: range, 
-    ls_dt = csv_readlist(file, file_path)
-    range_ls = []
+def sort_range(file, file_path):
+    read_dt = csv_readlist(file, file_path)
     range_ls_tmp =[]
-    n_lsdt = []
-
-    for i in ls_dt:
-        if i[type][-1].isdigit() == False:
-            i[type] = i[type][:-1]
-            #print i[type]
-        if i[type] == '':
-            i[type] = '0.0'
-        if i[type] not in range_ls_tmp:
-            range_ls_tmp.append(i[type])
+    sorted_dt = []
+    range_ls = []
+    for j in read_dt:
+            range_ls_tmp.append(float(j['range']))
+            
     range_ls = sorted(range_ls_tmp)
-    print range_ls
-
+    #print range_ls
     for k in range_ls:
-        for i in ls_dt:
-            if i[type] == k:
-                n_lsdt.append(i)
-        
-    return n_lsdt
+        for i in read_dt:
+            if float(i['range']) == k:
+                #print i['range']
+                sorted_dt.append(i)
+                
+    #print sorted_dt
+    return sorted_dt
+    
+def sort_premium(file, file_path):
+    read_dt = csv_readlist(file, file_path)
+    range_ls_tmp =[]
+    sorted_dt = []
+    range_ls = []
+    
+    for j in read_dt:
+            range_ls_tmp.append(float(j['premium'][:-1]))
+    range_ls = sorted(range_ls_tmp)
+    #print range_ls
+    for k in range_ls:
+        for i in read_dt:
+            if float(i['premium'][:-1]) == k:
+                sorted_dt.append(i)
+                
+    #print sorted_dt
+    return sorted_dt
 
 def sort_range_f5(lsdt):
     lsdt5 = []
@@ -205,23 +217,23 @@ def index_write():
     
     file_path = '/srv/www/idehe.com/store/stock_data/'
     
-    etf_data = sort_range(file_etf, file_path, 'range')
-    topic_data = sort_range(file_type, file_path, 'range')
-    zhaij_data = sort_range(file_zhaij, file_path, 'premium')
-    uncategory_data = sort_range(file_uncategory, file_path, 'range')
-    index_data = sort_range(file_index, file_path, 'range')
+    etf_data = sort_range(file_etf, file_path)
+    topic_data = sort_range(file_type, file_path)
+    zhaij_data = sort_premium(file_zhaij, file_path)
+    uncategory_data = sort_range(file_uncategory, file_path)
+    index_data = sort_range(file_index, file_path)
     
-    sfunda_data = sort_range(file_funda, file_path, 'range')
+    sfunda_data = sort_range(file_funda, file_path)
     f5_funda = sort_range_f5(sfunda_data)
     
-    
-    table_e = table(etf_data, '主要市场ETF', '1年价格排序/均价比较=（现价减均价）除以现价')
+    table_ind = table_index(index_data, '指数', '均价比较=（现价减均价）除以现价/')    
+    table_e = table(etf_data, '主要市场ETF', '1年价格排序/')
     #print table_e
     table_t = table(topic_data, '主题ETF', '1年价格排序/')
-    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价")
-    table_zj = table(zhaij_data, '场内债基', '主要看折溢价，成交量/年化折价')
+    table_fa = table(f5_funda, '分级A', "选取隐含收益5%以上，成交量100W以上，1年价格排序/52K不准确：环保，军工股A，网金融/X=分级A合并溢价, 正的高价，深圳区申购")
+    table_zj = table(zhaij_data, '场内债基', '按照折溢价排序/主要看折溢价，成交量/年化折价')
     table_un = table(uncategory_data, '其他未分类', 'X=封基年化折价')
-    table_ind = table_index(index_data, '指数', '')
+
     
     desc = page_desciption()
     content = h_content(desc, table_ind, table_e, table_t, table_fa, table_zj, table_un)

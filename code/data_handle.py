@@ -30,17 +30,38 @@ def grab_data_index(ifile, file_path):
 def data_range(is_lis_dic):
     for i in is_lis_dic:
         #print type(i['jk'])
-        cal_tmp = (float(i['current_price'])-float(i['52KL']))/(float(i['52KH'])-float(i['52KL']))
+        cur_price = float(i['current_price'][1:])
+        KL = float(i['52KL'])
+        KH = float(i['52KH'])
+        cal_tmp = (cur_price-KL)/(KH-KL)
+        print cal_tmp
         i['range'] = round(cal_tmp*100,2)
     basedata = csv_readlist('basedata.csv', "/srv/www/idehe.com/store/stock_data/")
-    for i in is_lis_dic:
+    for u in is_lis_dic:
         for j in basedata:
-            if i['SID'] == j['SID']:
-                i.update(j)
+            if u['SID'] == j['SID']:
+                u.update(j)
     #print is_lis_dic
     return is_lis_dic
 
 def data_range_index(is_lis_dic, g_path, avg_range):
+    
+    for e in is_lis_dic:
+        #print type(i['jk'])
+        cur_price = float(e['current_price'])
+        KL = float(e['52KL'])
+        KH = float(e['52KH'])
+        cal_tmp = (cur_price-KL)/(KH-KL)
+        #print cal_tmp
+        e['range'] = round(cal_tmp*100,2)
+        
+    basedata = csv_readlist('basedata.csv', "/srv/www/idehe.com/store/stock_data/")
+    
+    for u in is_lis_dic:
+        for j in basedata:
+            if u['SID'] == j['SID']:
+                u.update(j)
+                
     for i in is_lis_dic:
         SID = i['SID']
         check = gfile_check(SID, g_path)
@@ -63,8 +84,8 @@ def data_mhandle(infile, outfile, file_path):
     
 def data_mhandle_index(infile, outfile, file_path, g_path, avg_range):
     grabed_data = grab_data_index(infile, file_path)
-    data_ranged = data_range(grabed_data)
-    data_ranged_index = data_range_index(data_ranged, g_path, avg_range)    
+    #data_ranged = data_range(grabed_data)
+    data_ranged_index = data_range_index(grabed_data, g_path, avg_range)    
     csv_writelist(outfile, file_path, data_ranged_index)
 
     

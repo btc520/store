@@ -163,8 +163,8 @@ if __name__ == "__main__":
     SID = 'SH000001'
     today = '20161021'
     #data_format('jan 1, 2015')
-    adata = all_data(cid,syear, eyear)
-    print adata
+    #adata = all_data(cid,syear, eyear)
+    #print adata
     #data_write(cid, path, adata)
     #gfile_check(SID, path)
     
