@@ -187,7 +187,8 @@ def sort_premium(file, file_path):
     range_ls = []
     
     for j in read_dt:
-            range_ls_tmp.append(float(j['premium'][:-1]))
+        range_ls_tmp.append(float(j['premium'][:-1]))
+        
     range_ls = sorted(range_ls_tmp)
     #print range_ls
     for k in range_ls:

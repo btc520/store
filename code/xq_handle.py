@@ -102,7 +102,7 @@ def select_data_index(sdict):
     if sdict.has_key(u'30\u65e5\u5747\u91cf\uff1a') :
         e_data['30avg'] = sdict[u'30\u65e5\u5747\u91cf\uff1a']
     else:
-        e_data['30avg'] = ''
+        e_data['30avg'] = '0%'
     return e_data
 
     
